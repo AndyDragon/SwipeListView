@@ -1,5 +1,9 @@
 # SwipeListView for Runtime & Silverlight
 
+Credits from AndyDragon
+=======================
+This is a fork of the the https://github.com/FrayxRulez/SwipeListView repository, the only addition I have made is to allow the swipe buttons to stay on screen (sticky). All credit goes to FrayxRulez for creating and implementing the swipe list view.
+
 Introduction
 ============
 This repository contains a list with items swiping feature, like the one in new Outlook Mail app for Windows 10.
