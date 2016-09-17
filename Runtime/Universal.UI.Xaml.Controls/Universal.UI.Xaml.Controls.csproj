@@ -79,7 +79,6 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -89,10 +88,11 @@
     <Compile Include="ItemSwipeEventArgs.cs" />
     <Compile Include="ItemSwipeEventHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SwipeListDirection.cs" />
     <Compile Include="SwipeListBehavior.cs" />
+    <Compile Include="SwipeListDirection.cs" />
     <Compile Include="SwipeListView.cs" />
     <Compile Include="SwipeListViewItem.cs" />
+    <Compile Include="SwipeListViewItemState.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

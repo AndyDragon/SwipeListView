@@ -125,6 +125,9 @@
     <Compile Include="..\..\Runtime\Universal.UI.Xaml.Controls\SwipeListViewItem.cs">
       <Link>SwipeListViewItem.cs</Link>
     </Compile>
+    <Compile Include="..\..\Runtime\Universal.UI.Xaml.Controls\SwipeListViewItemState.cs">
+      <Link>SwipeListViewItemState.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Properties\Universal.UI.Xaml.Controls.rd.xml" />
   </ItemGroup>

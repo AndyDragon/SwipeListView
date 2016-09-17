@@ -39,6 +39,8 @@ namespace Universal.UI.Xaml.Controls
         private TranslateTransform DragClipTransform;
         private Border DragContainer;
 
+        private SwipeListViewItemState _itemState = SwipeListViewItemState.Collapsed;
+
         private SwipeListView _parent;
 
         public SwipeListViewItem()
@@ -74,6 +76,18 @@ namespace Universal.UI.Xaml.Controls
             DragContainer = (Border)GetTemplateChild("DragContainer");
         }
 
+        public SwipeListViewItemState ItemState
+        {
+            get
+            {
+                return this._itemState;
+            }
+            private set
+            {
+                this._itemState = value;
+            }
+        }
+
         /// <summary>
         /// Resets the <see cref="SwipeListViewItem"/> swipe state.
         /// </summary>
@@ -88,6 +102,8 @@ namespace Universal.UI.Xaml.Controls
                 ContentDragTransform.X = 0;
                 LeftTransform.X = -(LeftContainer.ActualWidth + 20);
                 RightTransform.X = (RightContainer.ActualWidth + 20);
+
+                this.ItemState = SwipeListViewItemState.Collapsed;
             }
         }
 
@@ -217,29 +233,50 @@ namespace Universal.UI.Xaml.Controls
 #endif
         {
             var target = (ActualWidth / 5) * 2;
+            var longTarget = (ActualWidth / 5) * 3;
             if ((_direction == SwipeListDirection.Left && LeftBehavior == SwipeListBehavior.Expand) ||
                 (_direction == SwipeListDirection.Right && RightBehavior == SwipeListBehavior.Expand))
             {
                 target = (ActualWidth / 5) * 3;
             }
+            else if ((_direction == SwipeListDirection.Left && LeftBehavior == SwipeListBehavior.Persist) ||
+                (_direction == SwipeListDirection.Right && RightBehavior == SwipeListBehavior.Persist))
+            {
+                target = (ActualWidth / 5) * 1.5;
+                longTarget = (ActualWidth / 5) * 2.5;
+            }
 
             Storyboard currentAnim;
 
-            if (_direction == SwipeListDirection.Left && ContentDragTransform.X >= target)
+            if (_direction == SwipeListDirection.Left && ContentDragTransform.X >= longTarget)
+            {
+                if (LeftBehavior == SwipeListBehavior.Collapse || LeftBehavior == SwipeListBehavior.Persist)
+                    currentAnim = CollapseAnimation(SwipeListDirection.Left, true);
+                else
+                    currentAnim = ExpandAnimation(SwipeListDirection.Left);
+            }
+            else if (_direction == SwipeListDirection.Left && ContentDragTransform.X >= target)
             {
                 if (LeftBehavior == SwipeListBehavior.Collapse)
                     currentAnim = CollapseAnimation(SwipeListDirection.Left, true);
                 else if (LeftBehavior == SwipeListBehavior.Persist)
-                    currentAnim = PersistAnimation(SwipeListDirection.Left, target);
+                    currentAnim = PersistAnimation(SwipeListDirection.Left, target * 2);
                 else
                     currentAnim = ExpandAnimation(SwipeListDirection.Left);
+            }
+            else if (_direction == SwipeListDirection.Right && ContentDragTransform.X <= -longTarget)
+            {
+                if (RightBehavior == SwipeListBehavior.Collapse || RightBehavior == SwipeListBehavior.Persist)
+                    currentAnim = CollapseAnimation(SwipeListDirection.Right, true);
+                else
+                    currentAnim = ExpandAnimation(SwipeListDirection.Right);
             }
             else if (_direction == SwipeListDirection.Right && ContentDragTransform.X <= -target)
             {
                 if (RightBehavior == SwipeListBehavior.Collapse)
                     currentAnim = CollapseAnimation(SwipeListDirection.Right, true);
                 else if (RightBehavior == SwipeListBehavior.Persist)
-                    currentAnim = PersistAnimation(SwipeListDirection.Right, target);
+                    currentAnim = PersistAnimation(SwipeListDirection.Right, target * 2);
                 else
                     currentAnim = ExpandAnimation(SwipeListDirection.Right);
             }
@@ -278,8 +315,9 @@ namespace Universal.UI.Xaml.Controls
 
                 Grid.SetColumn(DragBackground, 1);
                 Grid.SetColumnSpan(DragBackground, 1);
-
             };
+
+            this.ItemState = SwipeListViewItemState.Collapsed;
 
             if (raise)
             {
@@ -320,6 +358,8 @@ namespace Universal.UI.Xaml.Controls
                 currentAnim.Children.Add(animLeft);
                 currentAnim.Children.Add(animRight);
             }
+
+            this.ItemState = SwipeListViewItemState.Expanded;
 
             currentAnim.Completed += (s, args) =>
             {
@@ -363,6 +403,8 @@ namespace Universal.UI.Xaml.Controls
                 currentAnim.Children.Add(animRight);
             }
 
+            this.ItemState = (direction == SwipeListDirection.Left) ? SwipeListViewItemState.PersistedLeft : SwipeListViewItemState.PersistedRight;
+
             currentAnim.Completed += (s, args) =>
             {
                 if (ItemSwipe != null)
@@ -391,7 +433,6 @@ namespace Universal.UI.Xaml.Controls
 
             return anim;
         }
-
 
         public void CollapseSwipeContent()
         {

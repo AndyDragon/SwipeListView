@@ -14,11 +14,10 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 #endif
+using System.Windows.Input;
 
 namespace Universal.UI.Xaml.Controls
 {
-    using System.Windows.Input;
-
 #if SILVERLIGHT
     public class SwipeListView : ListBox
 #else
